@@ -18,7 +18,7 @@ const addUser = (userName,roomId) => {
 }
 
 const userLeave = (userName) => {
-    return users.filter(user => user.userName != userName)
+    users = users.filter(user => user.userName != userName)
 } 
 
 
