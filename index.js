@@ -5,7 +5,8 @@ const server = require("http").Server(app);
 const io = require("socket.io")(server)
 
 const port = 3004;
-const users = []
+
+ 
 app.get("/", (req, res) => {
     res.send("Hello world")
 })
@@ -18,10 +19,8 @@ const addUser = (userName,roomId) => {
 }
 
 const userLeave = (userName) => {
-    users = users.filter(user => user.userName != userName)
+    users =  users.filter(user => user.userName != userName)
 } 
-
-
 
 const getRoomUsers = (roomId) => {
     return users.filter(user => (user.roomId == roomId))
@@ -30,14 +29,16 @@ const getRoomUsers = (roomId) => {
 io.on("connection", socket => {
     console.log(`Someone connected`);
     socket.on("join-room", ({roomId, userName}) => {
- 
+
         console.log("User joined room");
         console.log(roomId);
         console.log(userName);
 
         socket.join(roomId);
+
         addUser(userName, roomId)
-        socket.to(roomId).emit("user-connected", userName);
+
+        socket.to(roomId).emit("user-connected", userName)
 
         io.to(roomId).emit("all-users",getRoomUsers(roomId));
 
@@ -51,6 +52,6 @@ io.on("connection", socket => {
     })
 })
 
-server.listen(port, () => {
+server.listen(process.env.PORT || port, () => {
     console.log(`Zoom clone api listening on localhost:3004`)
 })
